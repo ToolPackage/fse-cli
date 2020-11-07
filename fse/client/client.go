@@ -1,18 +1,16 @@
-package fse
+package client
 
 import (
 	"github.com/ToolPackage/fse/tx"
-	"github.com/jroimartin/gocui"
 	"net"
 )
 
 type Client struct {
 	channel *tx.Channel
-	gui     *gocui.Gui
 }
 
-func NewClient(gui *gocui.Gui) *Client {
-	return &Client{gui: gui}
+func NewClient() *Client {
+	return &Client{}
 }
 
 func (c *Client) Connect(addr string) error {

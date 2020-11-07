@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/ToolPackage/fse-cli/fse"
+	"github.com/ToolPackage/fse-cli/fse/ui"
 	"runtime"
 )
 
@@ -10,5 +10,5 @@ func main() {
 
 	//version.Build = Build
 
-	fse.Run()
+	ui.Run()
 }

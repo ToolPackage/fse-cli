@@ -22,6 +22,8 @@ var (
 
 func ColorLogo() string {
 	var buf strings.Builder
+	buf.WriteRune('\n')
+	buf.WriteRune('\n')
 	buf.WriteString(c.RedString("███████╗███████╗███████╗\n"))
 	buf.WriteString(c.RedString("██╔════╝██╔════╝██╔════╝\n"))
 	buf.WriteString(c.RedString("█████╗  ███████╗█████╗  \n"))
