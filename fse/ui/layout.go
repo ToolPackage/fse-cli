@@ -2,34 +2,34 @@ package ui
 
 import (
 	"fmt"
-	"github.com/0xAX/notificator"
 	"github.com/ToolPackage/fse-cli/fse/version"
 	"github.com/jroimartin/gocui"
 )
 
-var (
-	notify *notificator.Notificator
+const (
+	LogoView   = "logo"
+	OutputView = "output"
+	StatusView = "status"
+	EditorView = "editor"
+
+	EditorPrompt   = "> "
+	EditorPromptSz = len(EditorPrompt)
 )
 
 func Layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 
-	notify = notificator.New(notificator.Options{
-		AppName: version.Name,
-	})
-
-	if v, err := g.SetView("logo", -1, -1, maxX, 7); err != nil {
+	if v, err := g.SetView(LogoView, -1, -1, maxX, 7); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
-
 		v.Wrap = false
 		v.Frame = true
 
 		_, _ = fmt.Fprint(v, version.ColorLogo())
 	}
 
-	if v, err := g.SetView("output", -1, 7, maxX/2, maxY-2); err != nil {
+	if v, err := g.SetView(OutputView, -1, 7, maxX/2, maxY-2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -37,7 +37,7 @@ func Layout(g *gocui.Gui) error {
 		v.Frame = false
 	}
 
-	if v, err := g.SetView("status", maxX/2, 7, maxX, maxY-2); err != nil {
+	if v, err := g.SetView(StatusView, maxX/2, 7, maxX, maxY-2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
@@ -45,13 +45,18 @@ func Layout(g *gocui.Gui) error {
 		v.Frame = false
 	}
 
-	if v, err := g.SetView("editor", -1, maxY-2, maxX, maxY); err != nil {
+	if v, err := g.SetView(EditorView, -1, maxY-2, maxX, maxY); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
+		v.Editor = gocui.EditorFunc(SimpleEditorFunc)
+		v.Editable = true
 		v.Frame = false
-		v.BgColor = gocui.ColorRed
-		g.SetCurrentView("editor")
+		v.BgColor = gocui.ColorMagenta
+		printPrompt(v)
+		if _, err = g.SetCurrentView(EditorView); err != nil {
+			return err
+		}
 	}
 
 	return nil

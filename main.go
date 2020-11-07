@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/ToolPackage/fse-cli/fse"
 	"github.com/ToolPackage/fse-cli/fse/ui"
 	"runtime"
 )
@@ -10,5 +11,10 @@ func main() {
 
 	//version.Build = Build
 
-	ui.Run()
+	fse.Client = fse.NewClient()
+	defer fse.Client.Close()
+
+	ui.UI = new(ui.Gui)
+
+	ui.RunGui()
 }
