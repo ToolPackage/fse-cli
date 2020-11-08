@@ -35,3 +35,12 @@ func ColorLogo() string {
 	buf.WriteString(c.GreenString(" Source Code: %s\n", Website))
 	return buf.String()
 }
+
+func SimpleLogo() string {
+	var buf strings.Builder
+	buf.WriteRune('[')
+	buf.WriteString(c.RedString(Name))
+	buf.WriteString(c.GreenString(" v%s", Version))
+	buf.WriteRune(']')
+	return buf.String()
+}
