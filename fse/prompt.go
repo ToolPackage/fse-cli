@@ -12,7 +12,6 @@ const prompt = "> "
 var input strings.Builder
 var output = bufio.NewWriter(os.Stdout)
 var inputHistory = NewHistory()
-var inHistory bool
 
 func InputHandler(char rune, key keyboard.Key) error {
 	if key == keyboard.KeyEsc {
@@ -24,38 +23,43 @@ func InputHandler(char rune, key keyboard.Key) error {
 		inputHistory.ResetCurrent()
 		OutputRune(char)
 		input.WriteRune(char)
-		inHistory = false
+	case key == keyboard.KeySpace:
+		OutputRune(' ')
+		input.WriteRune(' ')
 	case key == keyboard.KeyEnter:
-		line := input.String()
-		if inHistory {
-			line = inputHistory.Current()
-		}
+		line := strings.Trim(input.String(), " ")
 		if len(line) > 0 {
 			input.Reset()
 			inputHistory.Add(line)
 			inputHistory.ResetCurrent()
 			OutputRune('\n')
+			RenderSuggestion(line)
 			OutputString("text: " + line)
 			NewLine()
 		}
-		inHistory = false
+
 	case key == keyboard.KeyArrowUp:
 		// choose history
 		if line := inputHistory.Prev(); len(line) > 0 {
 			EraseLine()
 			OutputString(line)
-			inHistory = true
+			input.Reset()
+			input.WriteString(line)
 		}
 	case key == keyboard.KeyArrowDown:
 		// choose history
-		EraseLine()
-		if line := inputHistory.Next(); len(line) > 0 {
-			OutputString(line)
-			inHistory = true
-		} else {
+		var line string
+		if line = inputHistory.Next(); len(line) == 0 {
+			// recover input
 			inputHistory.ResetCurrent()
-			OutputString(input.String())
-			inHistory = false
+		}
+		EraseLine()
+		OutputString(line)
+		input.Reset()
+		input.WriteString(line)
+	case key == keyboard.KeyBackspace:
+		if Back() {
+			inputHistory.ResetCurrent()
 		}
 	}
 
@@ -83,21 +87,27 @@ func OutputString(s string) {
 }
 
 func EraseLine() {
-	var sz int
-	if inHistory {
-		sz = len(inputHistory.Current())
-	} else {
-		sz = input.Len()
+	sz := input.Len()
+	if sz > 0 {
 		input.Reset()
+		_, _ = output.WriteString(moveCursorBack(sz))
+		_, _ = output.WriteString(strings.Repeat(" ", sz))
+		_, _ = output.WriteString(moveCursorBack(sz))
+		_ = output.Flush()
 	}
-	for i := 0; i < sz; i++ {
-		_, _ = output.WriteString(cursorBack)
+}
+
+func Back() bool {
+	sz := input.Len()
+	if sz > 0 {
+		_, _ = output.WriteString(moveCursorBack(1))
+		_, _ = output.WriteString(" ")
+		_, _ = output.WriteString(moveCursorBack(sz))
+		return true
 	}
-	for i := 0; i < sz; i++ {
-		_, _ = output.WriteRune(' ')
-	}
-	for i := 0; i < sz; i++ {
-		_, _ = output.WriteString(cursorBack)
-	}
-	_ = output.Flush()
+	return false
+}
+
+func Forward() {
+
 }
