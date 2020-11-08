@@ -1,4 +1,4 @@
-package ui
+package fse
 
 import (
 	"github.com/0xAX/notificator"
@@ -22,16 +22,11 @@ func RunGui() {
 	g.Cursor = true
 	g.Mouse = false
 	g.SetManagerFunc(Layout)
-
-	if err := g.SetKeybinding("", gocui.KeyCtrlC, gocui.ModNone, quit); err != nil {
+	if err := initKeybinding(g); err != nil {
 		log.Fatal(err)
 	}
 
 	if err := g.MainLoop(); err != nil || err != gocui.ErrQuit {
 		log.Fatal(err)
 	}
-}
-
-func quit(_ *gocui.Gui, _ *gocui.View) error {
-	return gocui.ErrQuit
 }

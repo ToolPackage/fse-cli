@@ -1,4 +1,4 @@
-package ui
+package fse
 
 import (
 	"fmt"
@@ -33,10 +33,12 @@ func SimpleEditorFunc(v *gocui.View, key gocui.Key, ch rune, mod gocui.Modifier)
 	case key == gocui.KeyInsert:
 		v.Overwrite = !v.Overwrite
 	case key == gocui.KeyEnter:
-		inputHistory.ResetCurrent()
 		input, _ := UI.ReadInput()
-		inputHistory.Add(input)
-		_ = UI.WriteOutput(input)
+		if len(input) > 0 {
+			inputHistory.Add(input)
+			inputHistory.ResetCurrent()
+			Client.Execute(input)
+		}
 	case key == gocui.KeyArrowUp:
 		// choose history
 		if line := inputHistory.Prev(); len(line) > 0 {

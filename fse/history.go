@@ -1,4 +1,4 @@
-package ui
+package fse
 
 type History struct {
 	max     int

@@ -1,4 +1,4 @@
-package ui
+package fse
 
 import (
 	"fmt"
@@ -9,7 +9,6 @@ import (
 const (
 	LogoView   = "logo"
 	OutputView = "output"
-	StatusView = "status"
 	EditorView = "editor"
 
 	EditorPrompt   = "> "
@@ -29,20 +28,13 @@ func Layout(g *gocui.Gui) error {
 		_, _ = fmt.Fprint(v, version.ColorLogo())
 	}
 
-	if v, err := g.SetView(OutputView, -1, 7, maxX/2, maxY-2); err != nil {
+	if v, err := g.SetView(OutputView, -1, 7, maxX, maxY-2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
 		v.Wrap = false
 		v.Frame = false
-	}
-
-	if v, err := g.SetView(StatusView, maxX/2, 7, maxX, maxY-2); err != nil {
-		if err != gocui.ErrUnknownView {
-			return err
-		}
-		v.Wrap = false
-		v.Frame = false
+		v.Autoscroll = true
 	}
 
 	if v, err := g.SetView(EditorView, -1, maxY-2, maxX, maxY); err != nil {
