@@ -1,7 +1,7 @@
 package fse
 
 import (
-	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -43,17 +43,29 @@ func init() {
 }
 
 func RenderSuggestion(input string) {
-	s := filterSuggestions(input)
+	tokens := strings.Split(input, " ")
+	s := filterSuggestions(tokens)
 	if len(s) == 0 {
 		return
 	}
 
-	fmt.Println(s)
+	deleteToEnd()
+	x, y := mainView.Cursor()
+	mainView.Overwrite = true
+
+	//outputString(fmt.Sprint(tokens))
+	a := s[0]
+	for idx := len(tokens); idx < len(a); idx++ {
+		pattern := a[idx]
+		outputRune(' ')
+		outputString(pattern.text + strconv.Itoa(idx))
+	}
+
+	_ = mainView.SetCursor(x, y)
 }
 
-func filterSuggestions(input string) []Suggestion {
+func filterSuggestions(tokens []string) []Suggestion {
 	s := make([]Suggestion, 0)
-	tokens := strings.Split(input, " ")
 	for _, suggestion := range suggestions {
 		if matchSuggestion(tokens, suggestion) {
 			s = append(s, suggestion)
