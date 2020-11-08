@@ -12,6 +12,7 @@ const prompt = "> "
 var input strings.Builder
 var output = bufio.NewWriter(os.Stdout)
 var inputHistory = NewHistory()
+var inHistory bool
 
 func InputHandler(char rune, key keyboard.Key) error {
 	if key == keyboard.KeyEsc {
@@ -23,8 +24,12 @@ func InputHandler(char rune, key keyboard.Key) error {
 		inputHistory.ResetCurrent()
 		OutputRune(char)
 		input.WriteRune(char)
+		inHistory = false
 	case key == keyboard.KeyEnter:
 		line := input.String()
+		if inHistory {
+			line = inputHistory.Current()
+		}
 		if len(line) > 0 {
 			input.Reset()
 			inputHistory.Add(line)
@@ -33,18 +38,24 @@ func InputHandler(char rune, key keyboard.Key) error {
 			OutputString("text: " + line)
 			NewLine()
 		}
+		inHistory = false
 	case key == keyboard.KeyArrowUp:
+		// choose history
 		if line := inputHistory.Prev(); len(line) > 0 {
-			OutputString(eraseLine)
+			EraseLine()
 			OutputString(line)
-			input.WriteString(line)
+			inHistory = true
 		}
 	case key == keyboard.KeyArrowDown:
+		// choose history
+		EraseLine()
 		if line := inputHistory.Next(); len(line) > 0 {
-			OutputString(eraseLine)
-			OutputString(eraseLine)
 			OutputString(line)
-			input.WriteString(line)
+			inHistory = true
+		} else {
+			inputHistory.ResetCurrent()
+			OutputString(input.String())
+			inHistory = false
 		}
 	}
 
@@ -72,9 +83,21 @@ func OutputString(s string) {
 }
 
 func EraseLine() {
-	sz := input.Len()
+	var sz int
+	if inHistory {
+		sz = len(inputHistory.Current())
+	} else {
+		sz = input.Len()
+		input.Reset()
+	}
 	for i := 0; i < sz; i++ {
 		_, _ = output.WriteString(cursorBack)
 	}
-
+	for i := 0; i < sz; i++ {
+		_, _ = output.WriteRune(' ')
+	}
+	for i := 0; i < sz; i++ {
+		_, _ = output.WriteString(cursorBack)
+	}
+	_ = output.Flush()
 }

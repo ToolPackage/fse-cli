@@ -35,6 +35,10 @@ func (h *History) Prev() string {
 	return h.current.data
 }
 
+func (h *History) Current() string {
+	return h.current.data
+}
+
 func (h *History) Next() string {
 	if !h.current.hasNext() {
 		return ""
@@ -55,7 +59,7 @@ func (n *HistoryNode) hasPrev() bool {
 }
 
 func (n *HistoryNode) hasNext() bool {
-	return n.next != nil
+	return n.next != nil && n.next.data != ""
 }
 
 type HistoryList struct {
