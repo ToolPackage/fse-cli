@@ -12,6 +12,7 @@ import (
 )
 
 var Opts Commands
+var client = newClient()
 
 type Commands struct {
 	List       ListSubCommands       `command:"list" description:"list all files in fse server"`
@@ -44,9 +45,9 @@ type DeleteSubCommands struct {
 }
 
 type ConnectionSubCommands struct {
-	List   ConnectionListSubCommands   `command:"list"`
+	List   ConnectionListSubCommands   `command:"ls"`
 	Add    ConnectionAddSubCommands    `command:"add"`
-	Remove ConnectionRemoveSubCommands `command:"remove"`
+	Remove ConnectionRemoveSubCommands `command:"rm"`
 }
 
 type ConnectionListSubCommands struct {
@@ -65,20 +66,57 @@ type ConnectionRemoveSubCommands struct {
 type VersionSubCommands struct {
 }
 
+type ConnectionInfo struct {
+	ServerAddr string
+	Token      string
+}
+
 func (l *ListSubCommands) Execute(args []string) error {
+	if err := login(); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (u *UploadSubCommands) Execute(args []string) error {
+	if err := login(); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (d *DownloadSubCommands) Execute(args []string) error {
+	if err := login(); err != nil {
+		return err
+	}
 	return nil
 }
 
 func (d *DeleteSubCommands) Execute(args []string) error {
+	if err := login(); err != nil {
+		return err
+	}
 	return nil
+}
+
+func login() error {
+	//if conn, err := getConnectionInfo(l.Conn); err != nil {
+	//	return err
+	//} else {
+	//	client.login(conn.ServerAddr, conn.Token)
+	//}
+	return nil
+}
+
+func getConnectionInfo(name string) (*ConnectionInfo, error) {
+	cred, err := wincred.GetGenericCredential(name)
+	if err != nil {
+		return nil, err
+	}
+	return &ConnectionInfo{
+		ServerAddr: cred.UserName,
+		Token:      string(cred.CredentialBlob),
+	}, nil
 }
 
 func (c *ConnectionListSubCommands) Execute(args []string) error {

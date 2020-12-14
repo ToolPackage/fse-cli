@@ -5,18 +5,18 @@ import (
 	"net"
 )
 
-type CommandClient struct {
+type FseClient struct {
 	channel *tx.Channel
 }
 
-func NewClient() *CommandClient {
-	return &CommandClient{}
+func newClient() *FseClient {
+	return &FseClient{}
 }
 
-func (c *CommandClient) login(addr string, token string) {
+func (c *FseClient) login(addr string, token string) {
 }
 
-func (c *CommandClient) connect(addr string) error {
+func (c *FseClient) connect(addr string) error {
 	conn, err := net.Dial("tcp", addr)
 	if err != nil {
 		return err
@@ -26,6 +26,6 @@ func (c *CommandClient) connect(addr string) error {
 	return nil
 }
 
-func (c *CommandClient) Close() {
+func (c *FseClient) Close() {
 
 }
