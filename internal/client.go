@@ -16,17 +16,17 @@ const (
 	configFileName = ".fse-cli"
 )
 
-type CommandClient struct {
+type FseClient struct {
 	cfg     *ini.Config
 	channel *tx.Channel
 }
 
-func NewClient() *CommandClient {
-	return &CommandClient{cfg: loadConfig()}
+func NewClient() *FseClient {
+	return &FseClient{cfg: loadConfig()}
 }
 
-func (c *CommandClient) login() error {
-	credName := c.cfg.Section("common").Variable(CurConnEnvVarName)
+func (f *FseClient) login() error {
+	credName := f.cfg.Section("common").Variable(CurConnEnvVarName)
 	if credName == nil || credName.Value.Type() != ini.StringType || len(credName.String()) == 0 {
 		return fmt.Errorf("current connection not set, use peek command to set one")
 	}
@@ -37,13 +37,13 @@ func (c *CommandClient) login() error {
 	}
 	cred := creds[0]
 
-	if err := c.connect(cred.UserName); err != nil {
+	if err := f.connect(cred.UserName); err != nil {
 		return err
 	}
 
 	// send auth packet
-	c.channel.NewPacket(actionAuth).Body(string(cred.CredentialBlob)).Emit()
-	res := c.channel.RecvPacket()
+	f.channel.NewPacket(actionAuth).Body(string(cred.CredentialBlob)).Emit()
+	res := f.channel.RecvPacket()
 	if res.StatusCode != http.StatusOK {
 		return fmt.Errorf("auth failed: %s", string(res.Content))
 	}
@@ -51,17 +51,17 @@ func (c *CommandClient) login() error {
 	return nil
 }
 
-func (c *CommandClient) connect(addr string) error {
+func (f *FseClient) connect(addr string) error {
 	conn, err := net.Dial("tcp", addr)
 	if err != nil {
 		return err
 	}
 
-	c.channel = tx.NewChannel(conn, conn)
+	f.channel = tx.NewChannel(conn, conn)
 	return nil
 }
 
-func (c *CommandClient) Close() {
+func (f *FseClient) Close() {
 
 }
 
