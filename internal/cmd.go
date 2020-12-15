@@ -2,7 +2,6 @@ package internal
 
 import (
 	"fmt"
-	"github.com/danieljoos/wincred"
 	c "github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	uuid "github.com/satori/go.uuid"
@@ -12,12 +11,15 @@ import (
 )
 
 var Opts Commands
+var client = NewClient()
+
+const CurConnEnvVarName = "FSE_CUR_CONN"
 
 type Commands struct {
-	List       ListSubCommands       `command:"list" description:"list all files in fse server"`
-	Upload     UploadSubCommands     `command:"upload" description:"upload file(s) to fse server"`
-	Download   DownloadSubCommands   `command:"download" description:"download file(s) from fse server"`
-	Delete     DeleteSubCommands     `command:"delete" description:"delete file(s) in fse server"`
+	List       ListSubCommands       `command:"ls" description:"list all files in fse server"`
+	Push       PushSubCommands       `command:"push" description:"upload file(s) to fse server"`
+	Pull       PullSubCommands       `command:"pull" description:"download file(s) from fse server"`
+	Delete     DeleteSubCommands     `command:"del" description:"delete file(s) in fse server"`
 	Connection ConnectionSubCommands `command:"conn" description:"manage fse server connections"`
 	Version    VersionSubCommands    `command:"version" description:"print client build version"`
 }
@@ -31,11 +33,11 @@ type ListSubCommands struct {
 	BaseCommand
 }
 
-type UploadSubCommands struct {
+type PushSubCommands struct {
 	BaseCommand
 }
 
-type DownloadSubCommands struct {
+type PullSubCommands struct {
 	BaseCommand
 }
 
@@ -44,9 +46,14 @@ type DeleteSubCommands struct {
 }
 
 type ConnectionSubCommands struct {
-	List   ConnectionListSubCommands   `command:"list"`
-	Add    ConnectionAddSubCommands    `command:"add"`
-	Remove ConnectionRemoveSubCommands `command:"remove"`
+	Peek   ConnectionPeekSubCommands   `command:"peek" description:"choose one connection as current one"`
+	List   ConnectionListSubCommands   `command:"ls" description:"list all connections"`
+	Add    ConnectionAddSubCommands    `command:"add" description:"add new connection"`
+	Remove ConnectionRemoveSubCommands `command:"rm" description:"remove connection"`
+}
+
+type ConnectionPeekSubCommands struct {
+	Name string `short:"n" long:"name" description:"connection name"`
 }
 
 type ConnectionListSubCommands struct {
@@ -66,14 +73,14 @@ type VersionSubCommands struct {
 }
 
 func (l *ListSubCommands) Execute(args []string) error {
+	return client.login()
+}
+
+func (p *PushSubCommands) Execute(args []string) error {
 	return nil
 }
 
-func (u *UploadSubCommands) Execute(args []string) error {
-	return nil
-}
-
-func (d *DownloadSubCommands) Execute(args []string) error {
+func (p *PullSubCommands) Execute(args []string) error {
 	return nil
 }
 
@@ -81,8 +88,17 @@ func (d *DeleteSubCommands) Execute(args []string) error {
 	return nil
 }
 
+func (c *ConnectionPeekSubCommands) Execute(args []string) error {
+	cred, err := lookupCredential(c.Name)
+	if err != nil {
+		return err
+	}
+
+	return os.Setenv(CurConnEnvVarName, cred[0].TargetName)
+}
+
 func (c *ConnectionListSubCommands) Execute(args []string) error {
-	creds, err := wincred.List()
+	creds, err := getAllCredentials()
 	if err != nil {
 		return err
 	}
@@ -92,9 +108,7 @@ func (c *ConnectionListSubCommands) Execute(args []string) error {
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
 	for _, cred := range creds {
-		if strings.Index(cred.TargetName, "fse:") == 0 {
-			table.Append([]string{cred.TargetName[4:], cred.UserName, cred.LastWritten.Format(time.RFC822)})
-		}
+		table.Append([]string{cred.TargetName[4:], cred.UserName, cred.LastWritten.Format(time.RFC822)})
 	}
 	table.Render()
 
@@ -107,18 +121,11 @@ func (c *ConnectionAddSubCommands) Execute(args []string) error {
 		credName = uuid.NewV4().String()
 		fmt.Println("connection name not provided, using generated name:", credName)
 	}
-	cred := wincred.NewGenericCredential("fse:" + credName)
-	cred.UserName = c.ServerAddr
-	cred.CredentialBlob = []byte(c.Token)
-	return cred.Write()
+	return addCredential(credName, c.ServerAddr, []byte(c.Token))
 }
 
 func (c *ConnectionRemoveSubCommands) Execute(args []string) error {
-	cred, err := wincred.GetGenericCredential("fse:" + c.Name)
-	if err != nil {
-		return err
-	}
-	return cred.Delete()
+	return removeCredential(c.Name)
 }
 
 func (v *VersionSubCommands) Execute(args []string) error {
