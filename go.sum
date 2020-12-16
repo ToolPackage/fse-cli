@@ -26,10 +26,15 @@ github.com/Luncert/go-ini v0.0.0-20201216033812-8b62c5bba56d h1:7C1jplMlSW7WNMap
 github.com/Luncert/go-ini v0.0.0-20201216033812-8b62c5bba56d/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
 github.com/Luncert/go-ini v0.0.0-20201216034017-95b25de5d1d0 h1:WNKMdOLvijLEQvQQ51BAfGPGDn1K+H96XlFJ+Wsbe7o=
 github.com/Luncert/go-ini v0.0.0-20201216034017-95b25de5d1d0/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
-github.com/Luncert/slog v1.0.0/go.mod h1:sNS0OyGCEjkLiO/MBB9Dnp3YIDSAGU3U/lJTB4i9Dac=
+github.com/Luncert/go-ini v0.0.0-20201216034605-1b2faf3c3aef h1:LlV1fbKG0xH0qXffYAGTp6FYLsBxfKlGsCNnnf0sNKg=
+github.com/Luncert/go-ini v0.0.0-20201216034605-1b2faf3c3aef/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
+github.com/Luncert/go-ini v0.0.0-20201216063941-04b515116c82 h1:7XGT9bL1HtljC9ypRDWoGzG21WKkwbiV0fAGwEH2lig=
+github.com/Luncert/go-ini v0.0.0-20201216063941-04b515116c82/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/ToolPackage/fse v0.1.0 h1:GfYBUZGvpXnDyfPskIwBFXF/A+gkEPYYxcAhODuqOMM=
 github.com/ToolPackage/fse v0.1.0/go.mod h1:3XyzG94BPrw+pDntYhNoUKAKK5b+6TJlfFXdE2Ky5y4=
+github.com/ToolPackage/fse v0.1.1 h1:D85YVsoRUgL91pp1NqE0yFh6jYHHoDfzYJSS183xfuk=
+github.com/ToolPackage/fse v0.1.1/go.mod h1:SVBgK75gl5sKF4PR/NInBFF50w6jfa0gDkWZYNwLiAg=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
 github.com/antlr/antlr4 v0.0.0-20201206235148-c87e55b61113 h1:+Je12tQpLUUQEfMUrLkTPXe1wh8VXCPjFsdwY29co30=

@@ -5,7 +5,9 @@ import (
 	c "github.com/fatih/color"
 	"github.com/olekukonko/tablewriter"
 	uuid "github.com/satori/go.uuid"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -29,10 +31,12 @@ type BaseCommand struct {
 
 type ListSubCommands struct {
 	BaseCommand
+	Recursive bool `short:"r" long:"recursive" description:"list all files recursively"`
 }
 
 type PushSubCommands struct {
 	BaseCommand
+	File string `short:"f" long:"file" description:"file to be pushed to server"`
 }
 
 type PullSubCommands struct {
@@ -71,10 +75,31 @@ type VersionSubCommands struct {
 }
 
 func (l *ListSubCommands) Execute(args []string) error {
-	return client.login()
+	if err := client.login(); err != nil {
+		return err
+	}
+
+	files, err := client.listFiles(l.Cwd)
+	if err != nil {
+		return err
+	}
+	fmt.Println(files)
+	return nil
 }
 
 func (p *PushSubCommands) Execute(args []string) error {
+	filename := filepath.Join(p.Cwd, p.File)
+	contentType := "unknown"
+	content, err := ioutil.ReadFile(p.File)
+	if err != nil {
+		return err
+	}
+
+	file, err := client.uploadFile(filename, contentType, content)
+	if err != nil {
+		return err
+	}
+	fmt.Println(file)
 	return nil
 }
 
@@ -92,7 +117,7 @@ func (c *ConnectionPeekSubCommands) Execute(args []string) error {
 		return err
 	}
 
-	client.setConnection(cred[0].TargetName)
+	client.setConnection(cred[0].TargetName[4:])
 	return nil
 }
 
