@@ -12,8 +12,13 @@ import (
 )
 
 const (
-	actionAuth     = "auth"
-	configFileName = ".fse-cli"
+	actionAuth        = "auth"
+	configFileName    = ".fse-cli"
+	curConnEnvVarName = "currentConnection"
+)
+
+var (
+	configFilePath = getConfigFilePath()
 )
 
 type FseClient struct {
@@ -26,12 +31,12 @@ func NewClient() *FseClient {
 }
 
 func (f *FseClient) login() error {
-	credName := f.cfg.Section("common").Variable(CurConnEnvVarName)
-	if credName == nil || credName.Value.Type() != ini.StringType || len(credName.String()) == 0 {
+	connName := f.cfg.Section("common").Variable(curConnEnvVarName)
+	if connName == nil || connName.Type() != ini.StringType || len(connName.String()) == 0 {
 		return fmt.Errorf("current connection not set, use peek command to set one")
 	}
 
-	creds, err := lookupCredential(credName.String())
+	creds, err := lookupCredential(connName.String())
 	if err != nil {
 		return err
 	}
@@ -61,20 +66,29 @@ func (f *FseClient) connect(addr string) error {
 	return nil
 }
 
-func (f *FseClient) Close() {
+func (f *FseClient) setConnection(connName string) {
+	f.cfg.CreateIfAbsent("common").
+		CreateIfAbsent(curConnEnvVarName).
+		SetValue(ini.NewStringValue(connName))
+	saveConfig(f.cfg)
+}
+
+func (f *FseClient) close() {
 
 }
 
 func loadConfig() *ini.Config {
-	data, err := ioutil.ReadFile(getConfigFilePath())
+	cfg, err := ini.ReadConfigFile(configFilePath)
 	if err != nil {
 		panic(err)
 	}
-	return ini.ParserIni(string(data))
+	return cfg
 }
 
-func saveConfig() {
-
+func saveConfig(cfg *ini.Config) {
+	if err := ini.WriteConfigFile(configFilePath, cfg); err != nil {
+		panic(err)
+	}
 }
 
 func getConfigFilePath() string {

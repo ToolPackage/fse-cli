@@ -13,8 +13,6 @@ import (
 var Opts Commands
 var client = NewClient()
 
-const CurConnEnvVarName = "FSE_CUR_CONN"
-
 type Commands struct {
 	List       ListSubCommands       `command:"ls" description:"list all files in fse server"`
 	Push       PushSubCommands       `command:"push" description:"upload file(s) to fse server"`
@@ -94,7 +92,8 @@ func (c *ConnectionPeekSubCommands) Execute(args []string) error {
 		return err
 	}
 
-	return os.Setenv(CurConnEnvVarName, cred[0].TargetName)
+	client.setConnection(cred[0].TargetName)
+	return nil
 }
 
 func (c *ConnectionListSubCommands) Execute(args []string) error {

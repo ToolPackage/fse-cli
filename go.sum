@@ -16,6 +16,16 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym
 github.com/Luncert/RedisExample v0.0.0-20190910051010-ac5ddefab708/go.mod h1:IGfNRR1OEaOVYSvIqQJyILw5odoMVrS9JDOyRxMUTgo=
 github.com/Luncert/go-ini v0.0.0-20201212105420-e9e76c90b6fc h1:B2xDAsSLaYZlD7LA+G3nRaCXNRPu6Pueo7uotIE5Kgs=
 github.com/Luncert/go-ini v0.0.0-20201212105420-e9e76c90b6fc/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
+github.com/Luncert/go-ini v0.0.0-20201216031602-98fa0fbe7e60 h1:tglv5n0UFn4pRiz8cnTz7voMSjptzR/O/cmK60+qWiU=
+github.com/Luncert/go-ini v0.0.0-20201216031602-98fa0fbe7e60/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
+github.com/Luncert/go-ini v0.0.0-20201216032557-c5cef9d2ac4d h1:lpUGcS2ifrS7uC5BYcejKp8K2VHbUY/xVOZYrD+PDzM=
+github.com/Luncert/go-ini v0.0.0-20201216032557-c5cef9d2ac4d/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
+github.com/Luncert/go-ini v0.0.0-20201216033030-695f1e0662f6 h1:Z6VTvtfmsL1dkym2MCfHXxasWd70abdnhAbkzj2y7d4=
+github.com/Luncert/go-ini v0.0.0-20201216033030-695f1e0662f6/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
+github.com/Luncert/go-ini v0.0.0-20201216033812-8b62c5bba56d h1:7C1jplMlSW7WNMaplk6azjZUbJa6e0DK1J9k3OZyppo=
+github.com/Luncert/go-ini v0.0.0-20201216033812-8b62c5bba56d/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
+github.com/Luncert/go-ini v0.0.0-20201216034017-95b25de5d1d0 h1:WNKMdOLvijLEQvQQ51BAfGPGDn1K+H96XlFJ+Wsbe7o=
+github.com/Luncert/go-ini v0.0.0-20201216034017-95b25de5d1d0/go.mod h1:2mdeLw7hhlIW3BSUnWoRge6WEYvTSwc7G7tyJM2/jMg=
 github.com/Luncert/slog v1.0.0/go.mod h1:sNS0OyGCEjkLiO/MBB9Dnp3YIDSAGU3U/lJTB4i9Dac=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=
 github.com/ToolPackage/fse v0.1.0 h1:GfYBUZGvpXnDyfPskIwBFXF/A+gkEPYYxcAhODuqOMM=
